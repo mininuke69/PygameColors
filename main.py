@@ -1,4 +1,4 @@
-import pygame, math, time, random
+import pygame, math
 
 pygame.init()
 CONSOLAS = pygame.font.SysFont("consolas", 24)
@@ -40,13 +40,23 @@ def ColorFromPoint(point):
             return item[1]
         
 
-elapsed = 0
-while elapsed < 20_000:
-    pygame.event.get()
+panic = 0
+while panic < 3:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            panic += 1
+            print(f"nah no quitting >:)")
+            
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            print(current_color)
+            
+
     RenderColors()
     mouse_pos = pygame.mouse.get_pos()
-    txt_img = pygame.font.Font.render(CONSOLAS, ColorFromPoint(mouse_pos), True, "black")
+    current_color = ColorFromPoint(mouse_pos)
+    txt_img = pygame.font.Font.render(CONSOLAS, current_color, True, "black")
     screen.blit(txt_img, mouse_pos)
     pygame.display.update()
 
+print("okay then :(")
 pygame.quit()
