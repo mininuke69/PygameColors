@@ -1,10 +1,13 @@
 import pygame, math
 
 pygame.init()
-CONSOLAS = pygame.font.SysFont("consolas", 24)
+CONSOLAS_SMALL = pygame.font.SysFont("consolas", 23)
 clock = pygame.time.Clock()
 SCREEN_WIDTH, SCREEN_HEIGHT = 1000, 500
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Pygame Color Picker")
+icon = pygame.image.load("icon.png")
+pygame.display.set_icon(icon)
 screen.fill("white")
 
 colors = pygame.color.THECOLORS
@@ -32,20 +35,23 @@ def RenderColors():
                             SCREEN_WIDTH / SQUARES_ON_LINE,
                             SCREEN_HEIGHT / SQUARES_ON_LINE)
         pygame.draw.rect(screen, pygame.color.Color(rgba), drawrect)
-        rect_name_dict.append((drawrect, name))
+        rect_name_dict.append((drawrect, name, rgba))
 
 def ColorFromPoint(point):
-    for item in rect_name_dict:
+    for item in rect_name_dict: #(rect, name, rgba)
         if item[0].collidepoint(point):
-            return item[1]
+            if item[1] != None:
+                return item[1], item[2]
+    else: return "", pygame.color.Color(255, 255, 255, 255)
+            
         
 
-panic = 0
-while panic < 3:
+
+while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            panic += 1
-            print(f"nah no quitting >:)")
+            pygame.quit()
+            quit()
             
         if event.type == pygame.MOUSEBUTTONDOWN:
             print(current_color)
@@ -53,10 +59,7 @@ while panic < 3:
 
     RenderColors()
     mouse_pos = pygame.mouse.get_pos()
-    current_color = ColorFromPoint(mouse_pos)
-    txt_img = pygame.font.Font.render(CONSOLAS, current_color, True, "black")
-    screen.blit(txt_img, mouse_pos)
+    current_color, current_rgba = ColorFromPoint(mouse_pos)
+    render_text = pygame.font.Font.render(CONSOLAS_SMALL, current_color, True, pygame.color.Color(255 - current_rgba[0], 255 - current_rgba[1], 255 - current_rgba[2], 510 - current_rgba[3]))
+    screen.blit(render_text, (mouse_pos[0] + 10, mouse_pos[1] - 10))
     pygame.display.update()
-
-print("okay then :(")
-pygame.quit()
